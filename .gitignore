@@ -6,6 +6,7 @@ dist/
 build/
 .env
 **/.env
+**/pnpm-lock.yaml
 *.log
 .DS_Store
 .vscode/
