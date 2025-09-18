@@ -1,0 +1,10 @@
+{
+  "name": "erms-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "echo \"Start frontend (add your toolchain, e.g. Vite/CRA)\" && exit 0",
+    "build": "echo \"Build frontend\" && exit 0"
+  }
+}
+

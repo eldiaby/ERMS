@@ -1,0 +1,35 @@
+# ============================
+# General
+# ============================
+node_modules/
+dist/
+build/
+.env
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# ============================
+# Backend (TypeScript)
+# ============================
+/backend/node_modules
+/backend/dist
+/backend/*.env
+/backend/pnpm-debug.log
+/backend/tsconfig.tsbuildinfo
+
+# ============================
+# Frontend (React + Vite + TS)
+# ============================
+/frontend/node_modules
+/frontend/dist
+/frontend/.env
+/frontend/pnpm-debug.log
+
+# ============================
+# Docker / System
+# ============================
+docker-data/
+mongo-data/
+
