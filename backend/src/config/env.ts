@@ -2,7 +2,7 @@ import path from "node:path";
 import dotenv from "dotenv";
 
 // Pick env file based on NODE_ENV
-const nodeEnv = process.env.NODE_ENV || "development";
+const nodeEnv = process.env.NODE_ENV || "production";
 const envFile = `${nodeEnv}.env`;
 
 dotenv.config({ path: path.join(__dirname, "..", "..", envFile) });
@@ -23,7 +23,7 @@ export const NODE_ENV = process.env.NODE_ENV ?? "development";
 export const PORT = Number(process.env.PORT) || 5000;
 
 // Database
-// export const MONGO_URI = requireEnv("MONGO_URI");
+export const MONGO_URI = requireEnv("MONGO_URI");
 export const REDIS_URL = process.env.REDIS_URL ?? "";
 export const POSTGRES_URL = process.env.POSTGRES_URL ?? "";
 
