@@ -1,7 +1,9 @@
 import express, { type Request, type Response } from "express";
 import morgan from "morgan";
+
 import { connectDB } from "./config/db";
-import { PORT, NODE_ENV } from "./config/env";
+import { NODE_ENV, PORT } from "./config/env";
+import authRouter from "./routes/authRouter";
 
 const app = express();
 
@@ -9,6 +11,8 @@ const app = express();
 app.use(express.json());
 
 if (NODE_ENV === `development`) app.use(morgan(`tiny`));
+
+app.use(`/api/v1/auth`, authRouter);
 
 // Routes
 app.get("/api/v1/health", (_: Request, res: Response) => {
