@@ -1,12 +1,8 @@
 import type { Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config/env";
+// import jwt from "jsonwebtoken";
+// import { JWT_SECRET } from "../config/env";
 import User from "../models/User";
-
-// helper to create token
-export const signToken = (id: string) => {
-	return jwt.sign({ id }, JWT_SECRET as string, { expiresIn: "7d" });
-};
+import { createSendToken } from "../utils/sendSecureCookie";
 
 // @desc    Signup new user
 // @route   POST /api/v1/auth/signup
@@ -15,23 +11,25 @@ export const signup = async (req: Request, res: Response) => {
 		const { name, email, password, passwordConfirm } = req.body;
 
 		const user = await User.create({ name, email, password, passwordConfirm });
-		const token = signToken(user._id.toString());
+
+		createSendToken(user, 201, res);
+		// const token = signToken(user._id.toString());
 
 		// hide password from response
 		// (user as IUser).password = undefined;
 
-		res.status(201).json({
-			status: "success",
-			token,
-			data: {
-				user: {
-					id: user._id,
-					name: user.name,
-					email: user.email,
-					role: user.role,
-				},
-			},
-		});
+		// res.status(201).json({
+		// 	status: "success",
+		// 	token,
+		// 	data: {
+		// 		user: {
+		// 			id: user._id,
+		// 			name: user.name,
+		// 			email: user.email,
+		// 			role: user.role,
+		// 		},
+		// 	},
+		// });
 	} catch (err: unknown) {
 		if (err instanceof Error) {
 			res.status(400).json({ status: "fail", message: err.message });
@@ -63,23 +61,25 @@ export const login = async (req: Request, res: Response) => {
 				.json({ status: "fail", message: "Invalid email or password" });
 		}
 
-		const token = signToken(user._id.toString());
+		createSendToken(user, 200, res);
+
+		// const token = signToken(user._id.toString());
 
 		// hide password from response
 		// (user as any).password = undefined;
 
-		res.json({
-			status: "success",
-			token,
-			data: {
-				user: {
-					id: user._id,
-					name: user.name,
-					email: user.email,
-					role: user.role,
-				},
-			},
-		});
+		// res.json({
+		// 	status: "success",
+		// 	token,
+		// 	data: {
+		// 		user: {
+		// 			id: user._id,
+		// 			name: user.name,
+		// 			email: user.email,
+		// 			role: user.role,
+		// 		},
+		// 	},
+		// });
 	} catch (err: unknown) {
 		if (err instanceof Error) {
 			res.status(400).json({ status: "fail", message: err.message });
