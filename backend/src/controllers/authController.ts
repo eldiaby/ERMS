@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
-// import jwt from "jsonwebtoken";
-// import { JWT_SECRET } from "../config/env";
+import { StatusCodes } from "http-status-codes";
+
 import User from "../models/User";
+import { sendResponse } from "../utils/apiResponse";
 import { createSendToken } from "../utils/sendSecureCookie";
 
 // @desc    Signup new user
@@ -12,30 +13,17 @@ export const signup = async (req: Request, res: Response) => {
 
 		const user = await User.create({ name, email, password, passwordConfirm });
 
-		createSendToken(user, 201, res);
-		// const token = signToken(user._id.toString());
-
-		// hide password from response
-		// (user as IUser).password = undefined;
-
-		// res.status(201).json({
-		// 	status: "success",
-		// 	token,
-		// 	data: {
-		// 		user: {
-		// 			id: user._id,
-		// 			name: user.name,
-		// 			email: user.email,
-		// 			role: user.role,
-		// 		},
-		// 	},
-		// });
-	} catch (err: unknown) {
-		if (err instanceof Error) {
-			res.status(400).json({ status: "fail", message: err.message });
-		} else {
-			res.status(400).json({ status: "fail", message: "Unexpected error" });
-		}
+		// use helper to send token + response
+		createSendToken(user, StatusCodes.CREATED, res);
+	} catch (err: any) {
+		sendResponse(res, {
+			statusCode: StatusCodes.BAD_REQUEST,
+			status: "error",
+			message: err.message,
+		});
+		// 	res
+		// 		.status(StatusCodes.BAD_REQUEST)
+		// 		.json({ status: "fail", message: err.message });
 	}
 };
 
@@ -49,7 +37,7 @@ export const login = async (req: Request, res: Response) => {
 		const user = await User.findOne({ email }).select("+password");
 		if (!user) {
 			return res
-				.status(401)
+				.status(StatusCodes.UNAUTHORIZED)
 				.json({ status: "fail", message: "Invalid email or password" });
 		}
 
@@ -57,34 +45,17 @@ export const login = async (req: Request, res: Response) => {
 		const isMatch = await user.comparePassword(password);
 		if (!isMatch) {
 			return res
-				.status(401)
+				.status(StatusCodes.UNAUTHORIZED)
 				.json({ status: "fail", message: "Invalid email or password" });
 		}
 
-		createSendToken(user, 200, res);
-
-		// const token = signToken(user._id.toString());
-
-		// hide password from response
-		// (user as any).password = undefined;
-
-		// res.json({
-		// 	status: "success",
-		// 	token,
-		// 	data: {
-		// 		user: {
-		// 			id: user._id,
-		// 			name: user.name,
-		// 			email: user.email,
-		// 			role: user.role,
-		// 		},
-		// 	},
-		// });
-	} catch (err: unknown) {
-		if (err instanceof Error) {
-			res.status(400).json({ status: "fail", message: err.message });
-		} else {
-			res.status(400).json({ status: "fail", message: "Unexpected error" });
-		}
+		// send token + response
+		createSendToken(user, StatusCodes.OK, res);
+	} catch (err: any) {
+		sendResponse(res, {
+			statusCode: StatusCodes.BAD_REQUEST,
+			status: "error",
+			message: err.message,
+		});
 	}
 };

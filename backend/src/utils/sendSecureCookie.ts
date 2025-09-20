@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 import { JWT_SECRET } from "../config/env";
 import type { IUser } from "../models/User";
+import { sendResponse } from "./apiResponse";
 
 interface Payload {
 	id: string;
@@ -35,10 +36,13 @@ export const createSendToken = (
 		maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 	});
 
-	res.status(statusCode).json({
+	// use unified apiResponse
+	sendResponse(res, {
+		statusCode,
 		status: "success",
-		token,
+		message: "Authentication successful",
 		data: {
+			token,
 			user: {
 				id: user._id,
 				name: user.name,
